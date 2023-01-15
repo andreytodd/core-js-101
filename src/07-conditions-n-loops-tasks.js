@@ -401,14 +401,14 @@ function isBracketsBalanced(str) {
 function toNaryString(num, n) {
   let quotient = num;
   let remainder = 0;
-  let nary = '';
+  let result = '';
 
   while (quotient > 0) {
     remainder = quotient % n;
     quotient = Math.floor(quotient / n);
-    nary = remainder + nary;
+    result = remainder + result;
   }
-  return nary;
+  return result;
 }
 
 
@@ -424,8 +424,27 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const root = pathes[0].split('/')[0];
+  for (let i = 1; i < pathes.length; i += 1) {
+    if (pathes[i].split('/')[0] !== root) {
+      return '';
+    }
+  }
+  let common = pathes[0].split('/').filter((elem) => elem !== '');
+  for (let i = 1; i < pathes.length; i += 1) {
+    const parts = pathes[i].split('/').filter((elem) => elem !== '');
+    for (let j = 0; j < common.length; j += 1) {
+      if (parts[j] !== common[j]) {
+        common = common.slice(0, j);
+        break;
+      }
+    }
+  }
+  if (`/${common.join('/')}/` === '//') {
+    return '/';
+  }
+  return `/${common.join('/')}/`;
 }
 
 
@@ -447,8 +466,19 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = [];
+  for (let i = 0; i < m1.length; i += 1) {
+    result[i] = [];
+    for (let j = 0; j < m2[0].length; j += 1) {
+      let sum = 0;
+      for (let k = 0; k < m1[0].length; k += 1) {
+        sum += m1[i][k] * m2[k][j];
+      }
+      result[i][j] = sum;
+    }
+  }
+  return result;
 }
 
 
@@ -482,8 +512,22 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const winningLines = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6],
+  ];
+
+  for (let i = 0; i < winningLines.length; i += 1) {
+    const [a, b, c] = winningLines[i];
+    if (position[Math.floor(a / 3)][a % 3]
+        && position[Math.floor(a / 3)][a % 3] === position[Math.floor(b / 3)][b % 3]
+        && position[Math.floor(a / 3)][a % 3] === position[Math.floor(c / 3)][c % 3]) {
+      return position[Math.floor(a / 3)][a % 3];
+    }
+  }
+  return null;
 }
 
 
